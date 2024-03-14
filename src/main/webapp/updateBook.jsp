@@ -1,0 +1,83 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
+<%@ taglib prefix="s" uri="/struts-tags" %>
+<%@ page import="java.util.List" %>
+<%@ page import="org.hibernate.Session" %>
+<%@ page import="com.example.Book" %>
+<%@ page import="com.example.FactoryProvider" %>
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Update Book</title>
+    <link rel="stylesheet" href="style_idx.css">
+</head>
+<body>
+
+
+<table>
+    <tr>
+        <th>Id</th>
+        <th>Title</th>
+        <th>Author</th>
+        <th>ISBN</th>
+        <th>Genre</th>
+        <th>Copies Available</th>
+    </tr>
+
+    <%
+
+        Session session1 = FactoryProvider.getFactory().openSession();
+
+        try {
+            session1.beginTransaction();
+            List<Book> books = session1.createQuery("from Book").getResultList();
+
+            for (Book book : books) {
+    %>
+    <tr>
+        <td><%= book.getId() %></td>
+        <td><%= book.getTitle() %></td>
+        <td><%= book.getAuthor() %></td>
+        <td><%= book.getIsbn() %></td>
+        <td><%= book.getGenre() %></td>
+        <td><%= book.getNumCopies() %></td>
+    </tr>
+    <%
+            }
+            session1.getTransaction().commit();
+        } finally {
+            if (session1 != null && session1.isOpen()) {
+                session1.close();
+            }
+        }
+    %>
+    <div class="container text-center mt-2">
+        <a href="index.jsp" class="btn btn-primary">Home</a>
+    </div>
+</table>
+
+<h1>Update Book</h1>
+
+<form action="UpdateBookAction" method="post" class="form-group">
+    <label for="id">Book ID:</label>
+    <input type="text" id="id" name="id" placeholder="Enter Book ID" required />
+
+    <label for="title">Title:</label>
+    <input type="text" id="title" name="book.title" placeholder="Enter Title" required />
+
+    <label for="author">Author:</label>
+    <input type="text" id="author" name="book.author" placeholder="Enter Author" required />
+
+    <label for="isbn">ISBN:</label>
+    <input type="text" id="isbn" name="book.isbn" placeholder="Enter ISBN" required />
+
+    <label for="genre">Genre:</label>
+    <input type="text" id="genre" name="book.genre" placeholder="Enter Genre" required />
+
+    <label for="numCopies">Copies Available:</label>
+    <input type="text" id="numCopies" name="book.numCopies" placeholder="Enter Copies Available" required />
+
+    <button type="submit">Update Book</button>
+</form>
+</body>
+</html>
